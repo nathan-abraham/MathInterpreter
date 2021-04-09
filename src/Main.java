@@ -31,7 +31,7 @@ public class Main {
     public static MyNumber run(String filename, String text, SymbolTable st) {
         Lexer lexer = new Lexer(filename, text);
         TokenCollection tkc = lexer.makeTokens();
-        System.out.println(tkc.tokens);
+         // System.out.println(tkc.tokens);
         if (tkc.error != null) {
             System.out.println(tkc.error);
             return null;
@@ -46,7 +46,7 @@ public class Main {
         if (tree == null || tree.toString() == "") {
             return null;
         }
-        System.out.println(tree.node);
+        // System.out.println(tree.node);
         Interpreter interpreter = new Interpreter(st);
         MyNumber value = interpreter.visit(tree.node);
         return value;
