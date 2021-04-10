@@ -99,7 +99,7 @@ public class Parser {
 
     public ParseResult expr() {
         ParseResult result = new ParseResult();
-        ParseResult term = result.register(term());
+        Node term = result.register(term()).node;
         if (result.error != null) {
             return result;
         }
@@ -108,61 +108,51 @@ public class Parser {
             if (currentToken.type.equals(Lexer.TT_PLUS)) {
                 advance();
                 ParseResult tempTerm = result.register(term());
-                if (result.error != null) {
+                if (result.error != null)
                     return result;
-                }
-                return result.success(new AddNode(term.node, tempTerm.node));
+
+                term = new AddNode(term, tempTerm.node);
             } else if (currentToken.type.equals(Lexer.TT_MINUS)) {
                 advance();
                 ParseResult tempTerm = result.register(term());
-                if (result.error != null) {
+                if (result.error != null)
                     return result;
-                }
-                return result.success(new SubNode(term.node, tempTerm.node));
+
+                term = new SubNode(term, tempTerm.node);
             }
         }
-        return result.success(term.node);
+        return result.success(term);
     }
 
     public ParseResult term() {
         ParseResult result = new ParseResult();
-        ParseResult factor = result.register(factor());
-        if (result.error != null) {
+        Node factor = result.register(factor()).node;
+        if (result.error != null)
             return result;
-        }
+
         while (currentToken != null
-                && (currentToken.type.equals(Lexer.TT_MUL) || currentToken.type.equals(Lexer.TT_DIV))
-                || currentToken.type.equals(Lexer.TT_POWER)) {
-            if (currentToken.type.equals(Lexer.TT_POWER)) {
+                && (currentToken.type.equals(Lexer.TT_MUL) || currentToken.type.equals(Lexer.TT_DIV))) {
+            if (currentToken.type.equals(Lexer.TT_MUL)) {
                 advance();
-                ParseResult tempTerm = result.register(term());
+                ParseResult tempTerm = result.register(factor());
                 if (result.error != null) {
                     return result;
                 }
-                return result.success(new PowerNode(factor.node, tempTerm.node));
-            } else if (currentToken.type.equals(Lexer.TT_MUL)) {
-                advance();
-                ParseResult tempTerm = result.register(term());
-                if (result.error != null) {
-                    return result;
-                }
-                return result.success(new MulNode(factor.node, tempTerm.node));
+                factor = new MulNode(factor, tempTerm.node);
             } else if (currentToken.type.equals(Lexer.TT_DIV)) {
                 advance();
-                ParseResult tempTerm = result.register(term());
+                ParseResult tempTerm = result.register(factor());
                 if (result.error != null) {
                     return result;
                 }
-                return result.success(new DivNode(factor.node, tempTerm.node));
+                factor = new DivNode(factor, tempTerm.node);
             }
         }
-        return result.success(factor.node);
+        return result.success(factor);
     }
 
     public ParseResult factor() {
         ParseResult result = new ParseResult();
-        if (result.error != null)
-            return result;
         if (currentToken.type.equals(Lexer.TT_PLUS)) {
             advance();
             ParseResult factor = result.register(factor());
@@ -177,6 +167,22 @@ public class Parser {
             return result.success(new MinusNode(factor.node));
         }
         return power();
+    }
+
+    public ParseResult power() {
+        ParseResult result = new ParseResult();
+        ParseResult factor = result.register(atom());
+        if (result.error != null)
+            return result;
+        if (currentToken.type.equals(Lexer.TT_POWER)) {
+            advance();
+            ParseResult tempTerm = result.register(factor());
+            if (result.error != null) {
+                return result;
+            }
+            return result.success(new PowerNode(factor.node, tempTerm.node));
+        }
+        return factor;
     }
 
     public ParseResult atom() {
@@ -205,21 +211,5 @@ public class Parser {
 
         return result.failure(new InvalidSyntaxError(currentToken.posStart, currentToken.posEnd,
                 "Expected int, float, identifier, \'+\', \'-\', or \'(\'"));
-    }
-
-    public ParseResult power() {
-        ParseResult result = new ParseResult();
-        ParseResult factor = result.register(atom());
-        if (result.error != null)
-            return result;
-        if (currentToken.type.equals(Lexer.TT_POWER)) {
-            advance();
-            ParseResult tempTerm = result.register(factor());
-            if (result.error != null) {
-                return result;
-            }
-            return result.success(new PowerNode(factor.node, tempTerm.node));
-        }
-        return factor;
     }
 }
