@@ -3,8 +3,6 @@ package src;
 import src.nodes.*;
 import src.errors.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.*;
 import java.util.Arrays;
 
 public class Lexer {
@@ -16,27 +14,29 @@ public class Lexer {
 
     public static final String DIGITS = "0123456789";
     public static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static String TT_INT = "INT";
-    public static String TT_FLOAT = "FLOAT";
-    public static String TT_PLUS = "PLUS";
-    public static String TT_MINUS = "MINUS";
-    public static String TT_MUL = "MUL";
-    public static String TT_DIV = "DIV";
-    public static String TT_LPAREN = "LPAREN";
-    public static String TT_RPAREN = "RPAREN";
-    public static String TT_EOF = "EOF";
-    public static String TT_POWER = "POWER";
-    public static String TT_KEYWORD = "KEYWORD";
-    public static String TT_IDENTIFIER = "IDENTIFIER";
-    public static String TT_EQ = "EQ";
-    public static String TT_EE = "EE";
-    public static String TT_NE = "NE";
-    public static String TT_LT = "LT";
-    public static String TT_GT = "GT";
-    public static String TT_LTE = "LTE";
-    public static String TT_GTE = "GTE";
+    public static final String TT_INT = "INT";
+    public static final String TT_FLOAT = "FLOAT";
+    public static final String TT_PLUS = "PLUS";
+    public static final String TT_MINUS = "MINUS";
+    public static final String TT_MUL = "MUL";
+    public static final String TT_DIV = "DIV";
+    public static final String TT_LPAREN = "LPAREN";
+    public static final String TT_RPAREN = "RPAREN";
+    public static final String TT_EOF = "EOF";
+    public static final String TT_POWER = "POWER";
+    public static final String TT_KEYWORD = "KEYWORD";
+    public static final String TT_IDENTIFIER = "IDENTIFIER";
+    public static final String TT_SEP = "SEP";
+    public static final String TT_EQ = "EQ";
+    public static final String TT_EE = "EE";
+    public static final String TT_NE = "NE";
+    public static final String TT_LT = "LT";
+    public static final String TT_GT = "GT";
+    public static final String TT_LTE = "LTE";
+    public static final String TT_GTE = "GTE";
     public static final String NULL_STRING = cts((char) 0);
-    public static final String[] KEYWORDS = { "var", "and", "or", "not" };
+    public static final String[] KEYWORDS = { "var", "and", "or", "not", "if", "then", "elif", "else", "for", "to",
+            "step", "while", "in" };
     public static final String[] compExprOps = { TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE };
 
     public int tempCount = 0;
@@ -99,6 +99,9 @@ public class Lexer {
                 tokens.add(makeLessThan());
             } else if (currentChar.equals(">")) {
                 tokens.add(makeGreaterThan());
+            } else if (currentChar.equals(",")) {
+                tokens.add(new Token(TT_SEP, pos));
+                advance();
             } else {
                 Position posStart = pos.copy();
                 String c = currentChar;

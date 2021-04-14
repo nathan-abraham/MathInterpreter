@@ -38,6 +38,12 @@ public class Interpreter {
             return visitLogOpNode((LogOpNode) n);
         } else if (n instanceof NotNode) {
             return visitNotNode((NotNode) n);
+        } else if (n instanceof IfNode) {
+            return visitIfNode((IfNode) n);
+        } else if (n instanceof ForNode) {
+            return visitForNode((ForNode) n);
+        } else if (n instanceof WhileNode) {
+            return visitWhileNode((WhileNode) n);
         }
         return null;
     }
@@ -130,5 +136,58 @@ public class Interpreter {
         if (a != 0)
             return true;
         return false;
+    }
+
+    public MyNumber visitIfNode(IfNode n) {
+        for (int i = 0; i < n.conditions.size(); i++) {
+            MyNumber conditionValue = visit(n.conditions.get(i));
+            if (conditionValue.value != 0) {
+                MyNumber exprValue = visit(n.expressions.get(i));
+                return exprValue;
+            }
+        }
+        if (n.elseCase != null) {
+            MyNumber elseValue = visit(n.elseCase.node);
+            return elseValue;
+        }
+        return null;
+    }
+
+    public MyNumber visitForNode(ForNode n) {
+        MyNumber startValue = visit(n.startValue);
+        MyNumber endValue = visit(n.endValue);
+        MyNumber stepValue;
+        if (n.stepValue != null) {
+            stepValue = visit(n.stepValue);
+        } else {
+            stepValue = new MyNumber(1);
+        }
+
+        double i = startValue.value;
+        if (stepValue.value >= 0) {
+            while (i < endValue.value) {
+                st.set(n.varName.name, new MyNumber(i));
+                i += stepValue.value;
+                visit(n.body);
+            }
+        } else {
+            while (i > endValue.value) {
+                st.set(n.varName.name, new MyNumber(i));
+                i += stepValue.value;
+                visit(n.body);
+            }
+        }
+        return null;
+    }
+
+    public MyNumber visitWhileNode(WhileNode n) {
+        MyNumber condition;
+        while (true) {
+            condition = visit(n.condition);
+            if (condition.value == 0)
+                break;
+            visit(n.body);
+        }
+        return null;
     }
 }
