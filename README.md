@@ -12,9 +12,9 @@ Variables can be accessed using their name (and nothing else).
 To change the value of the variable, use the the same syntax as declaring a variable.
 
 ## Logical Operators
-The and operator can be used using the keyword ```and```
-The or operator can be used using the keyword ```or```
-The not operator can be used using the keyword ```not```
+The and operator can be used using the keyword ```and```,
+the or operator can be used using the keyword ```or```,
+and the not operator can be used using the keyword ```not```.
 
 ## Control Flow
 The following is the syntax for an if statement: ```if <some boolean expression> then <some expression>```
