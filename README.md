@@ -17,8 +17,8 @@ the or operator can be used using the keyword ```or```,
 and the not operator can be used using the keyword ```not```.
 
 ## Control Flow
-The following is the syntax for an if statement: ```if <some boolean expression> then <some expression>```
-Else if and else statments are also supported: ```if <some boolean expression> then <some expression> elif <some boolean expression> then <some expression> else <some expression>```
+The following is the syntax for an if statement: ```if <some boolean expression> then <some expression>```. <br />
+Else if and else statments are also supported: ```if <some boolean expression> then <some expression> elif <some boolean expression> then <some expression> else <some expression>```.
 
 ## Additional Notes
-The language does not actually have a boolean data type but rather uses a 1 for "true" and 0 for false. Therfore, a the number ```1``` or an expression that evaluates to ```1``` can be used as a boolean expression.
+The language does not actually have a boolean data type but rather uses a 1 for "true" and 0 for false. Therfore, a the number ```1``` or an expression that evaluates to ```1``` can be used as a boolean expression. The keyword ```exit``` can be used to exit the shell.
